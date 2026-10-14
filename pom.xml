@@ -149,6 +149,10 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
+                            <excludes>
+                                <!-- Bootstrap class: main() is not exercised by tests. -->
+                                <exclude>com/deliveryfee/DeliveryFeeApplication.class</exclude>
+                            </excludes>
                             <rules>
                                 <rule>
                                     <element>BUNDLE</element>

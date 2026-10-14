@@ -94,7 +94,7 @@ A ready-to-run script with more examples is in [`scripts/demo.sh`](scripts/demo.
 ./mvnw verify   # unit + integration tests, Spotless formatting check, JaCoCo coverage gate
 ```
 
-Coverage is enforced at ≥ 70% instruction (currently ~84%) on `com.deliveryfee.*`. The test
+Coverage is enforced at ≥ 70% instruction (currently ~94%) on `com.deliveryfee.*`. The test
 suite includes boundary matrices for the numeric matcher, phenomenon precedence, the spec
 example (Tartu + bike = 4.00), XXE rejection, import idempotency, and historical-datetime
 integration tests.
