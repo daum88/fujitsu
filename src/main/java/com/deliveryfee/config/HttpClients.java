@@ -1,13 +1,16 @@
 package com.deliveryfee.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import javax.xml.stream.XMLInputFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.client.RestClient;
 
 /**
@@ -34,6 +37,20 @@ public class HttpClients {
                 .baseUrl(properties.weatherImport().url())
                 .requestFactory(requestFactory)
                 .build();
+    }
+
+    /**
+     * Builds the primary JSON {@link ObjectMapper} used for REST serialization. It must be declared
+     * explicitly so the hardened {@link XmlMapper} bean (an {@link ObjectMapper} subtype) does not
+     * shadow Spring Boot's JSON mapper.
+     *
+     * @param builder the auto-configured Jackson builder (includes the JSR-310 time module)
+     * @return the JSON mapper
+     */
+    @Bean
+    @Primary
+    public ObjectMapper jsonObjectMapper(Jackson2ObjectMapperBuilder builder) {
+        return builder.build();
     }
 
     /**
