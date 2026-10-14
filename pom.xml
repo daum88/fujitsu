@@ -53,11 +53,6 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-database-h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
 
         <!-- Hardened XML parsing for the weather feed -->
         <dependency>

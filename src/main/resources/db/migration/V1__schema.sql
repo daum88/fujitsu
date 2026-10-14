@@ -35,7 +35,6 @@ CREATE TABLE extra_fee_rule (
     forbidden           BOOLEAN NOT NULL DEFAULT FALSE,
     valid_from          TIMESTAMP WITH TIME ZONE NOT NULL,
     valid_to            TIMESTAMP WITH TIME ZONE,
-    CONSTRAINT uq_extra_rule UNIQUE (condition_type, vehicle_type, valid_from),
     CONSTRAINT chk_extra_rule CHECK (
         (min_value IS NULL AND max_value IS NULL AND phenomenon_category IS NOT NULL) OR
         (phenomenon_category IS NULL AND (min_value IS NOT NULL OR max_value IS NOT NULL))),
