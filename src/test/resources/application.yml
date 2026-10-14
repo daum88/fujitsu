@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: delivery-fee-service
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+  flyway:
+    enabled: true
+
+app:
+  weather-import:
+    enabled: false
+    cron: "0 15 * * * ?"
+    url: "https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php"
+    connect-timeout: 5s
+    read-timeout: 30s
+    batch-size: 50

@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * Entry point of the delivery fee service.
  *
- * <p>Scheduling is enabled for the hourly weather import; the import itself is gated by
- * {@code app.weather-import.enabled} so it can be switched off in tests.</p>
+ * <p>Scheduling is enabled for the hourly weather import; the import itself is gated by {@code
+ * app.weather-import.enabled} so it can be switched off in tests.
  */
 @SpringBootApplication
 @EnableScheduling

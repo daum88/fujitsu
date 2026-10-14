@@ -14,7 +14,7 @@ import org.springframework.web.client.RestClient;
  * Centralised HTTP and XML infrastructure.
  *
  * <p>The {@link XmlMapper} is hardened against XXE / entity-expansion attacks: DTD support and
- * external entities are disabled, and entity reference replacement is switched off.</p>
+ * external entities are disabled, and entity reference replacement is switched off.
  */
 @Configuration
 public class HttpClients {
@@ -47,7 +47,6 @@ public class HttpClients {
         XMLInputFactory inputFactory = XMLInputFactory.newFactory();
         inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-        inputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
 
         XmlFactory xmlFactory = XmlFactory.builder().xmlInputFactory(inputFactory).build();
         XmlMapper mapper = new XmlMapper(xmlFactory);

@@ -1,8 +1,8 @@
 package com.deliveryfee.common;
 
 /**
- * Verbatim, user-facing business messages shared by the fee engine, the global exception
- * handler and the tests so that every layer references the exact same string.
+ * Verbatim, user-facing business messages shared by the fee engine, the global exception handler
+ * and the tests so that every layer references the exact same string.
  */
 public final class BusinessMessages {
 

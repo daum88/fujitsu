@@ -11,8 +11,8 @@ import org.springframework.validation.annotation.Validated;
 /**
  * Typed, validated application configuration bound from {@code application.yml}.
  *
- * <p>The weather import URL is configuration-only (never request input), which together with
- * the HTTPS-only constraint mitigates SSRF.</p>
+ * <p>The weather import URL is configuration-only (never request input), which together with the
+ * HTTPS-only constraint mitigates SSRF.
  */
 @Validated
 @ConfigurationProperties(prefix = "app")
