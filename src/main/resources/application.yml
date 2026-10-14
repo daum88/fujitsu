@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: delivery-fee-service
+  datasource:
+    url: jdbc:h2:file:./data/deliveryfee;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: ${app.weather-import.batch-size}
+        order_inserts: true
+  flyway:
+    enabled: true
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  weather-import:
+    enabled: true
+    cron: "0 15 * * * ?"
+    url: "https://www.ilmateenistus.ee/ilma_andmed/xml/observations.php"
+    connect-timeout: 5s
+    read-timeout: 30s
+    batch-size: 50
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
