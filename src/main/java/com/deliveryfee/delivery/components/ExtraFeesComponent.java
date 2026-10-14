@@ -23,6 +23,11 @@ public class ExtraFeesComponent implements FeeComponent {
     private final ConditionMatcher matcher;
     private final ExtraFeeRuleRepository extraFeeRuleRepository;
 
+    /**
+     * @param conditionType which weather condition this component evaluates
+     * @param matcher strategy deciding whether a rule's condition matches the observation
+     * @param extraFeeRuleRepository source of extra fee rules
+     */
     public ExtraFeesComponent(
             ConditionType conditionType,
             ConditionMatcher matcher,

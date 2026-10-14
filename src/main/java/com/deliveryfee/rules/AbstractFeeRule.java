@@ -32,6 +32,10 @@ public abstract class AbstractFeeRule {
     @Column(name = "valid_to")
     private Instant validTo;
 
+    /**
+     * @param validFrom start of the validity window (inclusive)
+     * @param validTo end of the validity window (exclusive, {@code null} = open-ended)
+     */
     protected AbstractFeeRule(Instant validFrom, Instant validTo) {
         this.validFrom = validFrom;
         this.validTo = validTo;

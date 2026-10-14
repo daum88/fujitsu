@@ -11,6 +11,9 @@ public class RegionalBaseFeeComponent implements FeeComponent {
 
     private final BaseFeeRuleRepository baseFeeRuleRepository;
 
+    /**
+     * @param baseFeeRuleRepository source of regional base fee rules
+     */
     public RegionalBaseFeeComponent(BaseFeeRuleRepository baseFeeRuleRepository) {
         this.baseFeeRuleRepository = baseFeeRuleRepository;
     }
