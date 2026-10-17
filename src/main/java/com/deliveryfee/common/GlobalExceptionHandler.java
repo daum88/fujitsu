@@ -1,9 +1,11 @@
 package com.deliveryfee.common;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -13,12 +15,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * Single, centralised error renderer. Every handled exception becomes an RFC 9457 {@link
- * ProblemDetail} body with a fixed message; full stack traces are logged server-side only.
+ * ProblemDetail} body with a fixed message plus a {@code requestId} so a client error can be
+ * correlated with the server log. Full stack traces are logged server-side only.
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -98,16 +103,46 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGeneric(Exception ex) {
-        log.error("Unhandled exception", ex);
+        log.error(
+                "Unhandled exception request={} requestId={}",
+                requestDescription(),
+                currentRequestId(),
+                ex);
         return problem(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", List.of());
     }
 
     private static ProblemDetail problem(HttpStatus status, String detail, List<String> errors) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
+        String requestId = currentRequestId();
+        if (requestId != null) {
+            problemDetail.setProperty("requestId", requestId);
+        }
         if (!errors.isEmpty()) {
             problemDetail.setProperty("errors", errors);
         }
+        if (!status.is5xxServerError()) {
+            log.warn(
+                    "Request rejected: status={} detail={} request={} requestId={}",
+                    status.value(),
+                    detail,
+                    requestDescription(),
+                    requestId);
+        }
         return problemDetail;
+    }
+
+    private static String currentRequestId() {
+        return MDC.get(RequestIdFilter.MDC_KEY);
+    }
+
+    private static String requestDescription() {
+        ServletRequestAttributes attributes =
+                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            return null;
+        }
+        HttpServletRequest request = attributes.getRequest();
+        return request.getMethod() + " " + request.getRequestURI();
     }
 
     private static String formatFieldError(FieldError error) {

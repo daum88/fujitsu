@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class WeatherImportService {
      */
     @Transactional
     public ImportResult importLatest() {
+        long start = System.nanoTime();
         ObservationsXml observations = parse(fetchFeed());
         if (observations.timestamp() <= 0) {
             throw new IllegalStateException("Weather feed timestamp is missing or invalid");
@@ -117,12 +119,16 @@ public class WeatherImportService {
                     LOG_PREFIX,
                     missingStations);
         }
+        long durationMs = (System.nanoTime() - start) / 1_000_000;
+        long feedAgeSeconds = Duration.between(observedAt, Instant.now()).getSeconds();
         log.info(
-                "{}: imported={} skipped={} missingStations={}",
+                "{}: imported={} skipped={} missingStations={} durationMs={} feedAgeSeconds={}",
                 LOG_PREFIX,
                 newObservations.size(),
                 skipped,
-                missingStations);
+                missingStations,
+                durationMs,
+                feedAgeSeconds);
         return new ImportResult(newObservations.size(), skipped, List.copyOf(missingStations));
     }
 

@@ -27,6 +27,7 @@ public class WeatherImportJob {
     private static final String LOG_PREFIX = "weather-import";
 
     private final WeatherImportService importService;
+    private final ImportStatus importStatus;
 
     /** Hourly import driven by the configured cron expression. */
     @Scheduled(cron = "${app.weather-import.cron}")
@@ -41,10 +42,19 @@ public class WeatherImportJob {
     }
 
     private void runImport() {
+        long start = System.nanoTime();
         try {
             importService.importLatest();
+            importStatus.recordSuccess();
         } catch (Exception e) {
-            log.error("{}: import failed, serving last-known data", LOG_PREFIX, e);
+            long durationMs = (System.nanoTime() - start) / 1_000_000;
+            importStatus.recordFailure(e.getMessage());
+            log.error(
+                    "{}: import failed after {}ms; serving last-known data. Cause: {}",
+                    LOG_PREFIX,
+                    durationMs,
+                    e.toString(),
+                    e);
         }
     }
 }
