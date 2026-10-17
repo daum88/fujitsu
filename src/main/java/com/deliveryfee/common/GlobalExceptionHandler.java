@@ -82,11 +82,6 @@ public class GlobalExceptionHandler {
         return problem(HttpStatus.BAD_REQUEST, ex.getMessage(), List.of());
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ProblemDetail handleBadRequest(BadRequestException ex) {
-        return problem(HttpStatus.BAD_REQUEST, ex.getMessage(), List.of());
-    }
-
     @ExceptionHandler(NotFoundException.class)
     public ProblemDetail handleNotFound(NotFoundException ex) {
         return problem(HttpStatus.NOT_FOUND, ex.getMessage(), List.of());

@@ -157,9 +157,3 @@ Explicit non-goal: authentication/authorization (out of task scope; noted as pro
 Authentication/authorization, admin UI, Docker, multi-module build, caching layer, reactive
 stack. Each cut saves time that goes into the graded criteria (OOP design, layering,
 readability, documented public methods, error handling, test coverage, project hygiene).
-
-## Note on seed row count
-
-`PLAN.md` mentions "14 extra fee rules / 23 rows"; its own enumeration of the three conditions
-sums to **12 extra rules** (4 temperature + 2 wind + 6 phenomenon), which is what is seeded and
-tested (9 base + 12 extra = 21 rows). The enumerated rules are authoritative.
