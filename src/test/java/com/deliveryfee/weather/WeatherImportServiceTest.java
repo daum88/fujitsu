@@ -183,6 +183,54 @@ class WeatherImportServiceTest {
         assertThat(repository.count()).isZero();
     }
 
+    @Test
+    void importLatest_fullLiveFeed_importsOnlyTheThreeRelevantStations() {
+        enqueue(readResource("weather-sample-full.xml"));
+
+        ImportResult result = service.importLatest();
+
+        assertThat(result.imported()).isEqualTo(3);
+        assertThat(result.missingStations()).isEmpty();
+        assertThat(repository.count()).isEqualTo(3);
+        assertThat(repository.findAll())
+                .extracting(WeatherObservation::getStationName)
+                .containsExactlyInAnyOrder("Tallinn-Harku", "Tartu-Tõravere", "Pärnu");
+    }
+
+    @Test
+    void importLatest_relevantStationWithEmptyTemperature_isSkippedNotMissing() {
+        enqueue(
+                """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <observations timestamp="1762000000">
+                  <station>
+                    <name>Tallinn-Harku</name>
+                    <airtemperature>-2.5</airtemperature>
+                    <windspeed>4.5</windspeed>
+                  </station>
+                  <station>
+                    <name>Tartu-Tõravere</name>
+                    <airtemperature>-12.0</airtemperature>
+                    <windspeed>3.4</windspeed>
+                  </station>
+                  <station>
+                    <name>Pärnu</name>
+                    <airtemperature></airtemperature>
+                    <windspeed>3.0</windspeed>
+                  </station>
+                </observations>
+                """);
+
+        ImportResult result = service.importLatest();
+
+        assertThat(result.imported()).isEqualTo(2);
+        assertThat(result.skipped()).isEqualTo(1);
+        assertThat(result.missingStations()).isEmpty();
+        assertThat(repository.findAll())
+                .extracting(WeatherObservation::getStationName)
+                .containsExactlyInAnyOrder("Tallinn-Harku", "Tartu-Tõravere");
+    }
+
     private void enqueueSample() {
         enqueue(readResource("weather-sample.xml"));
     }

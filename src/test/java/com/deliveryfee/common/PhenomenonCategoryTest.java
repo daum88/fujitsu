@@ -26,6 +26,14 @@ class PhenomenonCategoryTest {
                 Arguments.of("glaze", PhenomenonCategory.GLAZE_HAIL_THUNDER),
                 Arguments.of("hail", PhenomenonCategory.GLAZE_HAIL_THUNDER),
                 Arguments.of("thunderstorm", PhenomenonCategory.GLAZE_HAIL_THUNDER),
+                // Real values observed in the live Ilmateenistus feed
+                Arguments.of("Light shower", PhenomenonCategory.RAIN),
+                Arguments.of("Light rain", PhenomenonCategory.RAIN),
+                Arguments.of("Moderate rain", PhenomenonCategory.RAIN),
+                Arguments.of("Overcast", null),
+                Arguments.of("Variable clouds", null),
+                Arguments.of("Few clouds", null),
+                Arguments.of("Clear", null),
                 Arguments.of("Cloudy with clear spells", null),
                 Arguments.of("", null),
                 Arguments.of(null, null));
