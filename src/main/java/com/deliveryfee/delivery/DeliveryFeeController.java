@@ -46,10 +46,11 @@ public class DeliveryFeeController {
                     future) to price a historical delivery using the weather and rules that were
                     active at that time.
 
-                    Try these scenarios:
+                    Historical weather is collected going forward from the first run. With the
+                    `dev` profile, demo observations are seeded so you can also try the past:
                     - Current fee:   city=TARTU&vehicleType=BIKE
-                    - Historical:    city=TARTU&vehicleType=BIKE&datetime=2024-01-15T12:00:00Z
-                    - Forbidden bike (storm / wind > 20 m/s): 400 with a verbatim message
+                    - Winter (snow): city=TARTU&vehicleType=BIKE&datetime=2024-01-15T12:00:00Z
+                    - Summer storm:  city=TALLINN&vehicleType=BIKE&datetime=2024-07-15T12:00:00Z
                     """)
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Fee calculated"),

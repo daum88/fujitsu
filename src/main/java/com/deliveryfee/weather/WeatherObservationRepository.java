@@ -34,4 +34,13 @@ public interface WeatherObservationRepository extends JpaRepository<WeatherObser
     @Query(
             "select w.stationName, max(w.observedAt) from WeatherObservation w group by w.stationName")
     List<Object[]> findLatestObservedAtPerStation();
+
+    /**
+     * Checks whether an observation for a station and instant already exists (idempotent seeding).
+     *
+     * @param stationName station name
+     * @param observedAt observation instant
+     * @return {@code true} when the observation is already stored
+     */
+    boolean existsByStationNameAndObservedAt(String stationName, Instant observedAt);
 }

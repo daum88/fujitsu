@@ -70,6 +70,11 @@ direction: `delivery → {rules, weather}`, everything depends on `common`; no c
 On startup the app performs a **best-effort weather import** (failures are logged, never block
 boot). The H2 database is stored in `./data/` (file mode), so history survives restarts.
 
+**Demo historical data (dev profile):** run with `./mvnw spring-boot:run
+-Dspring-boot.run.profiles=dev` to also seed a few past observations (winter snow 2024-01-15 and a
+summer storm 2024-07-15) plus the H2 console at `/h2-console`. This lets you exercise the
+historical `datetime` endpoint immediately.
+
 ### Demo curls
 
 ```bash
