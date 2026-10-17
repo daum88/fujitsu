@@ -140,4 +140,25 @@ class DeliveryFeeControllerTest {
                                                 org.hamcrest.Matchers.containsString(
                                                         "sensitive"))));
     }
+
+    @Test
+    void calculate_datetimeWithUtcOffset_returns200() throws Exception {
+        FeeBreakdown breakdown = FeeBreakdown.of(bd("2.50"), bd("0.00"), bd("0.00"), bd("0.00"));
+        DeliveryFeeResponse response =
+                DeliveryFeeResponse.of(
+                        TARTU,
+                        BIKE,
+                        breakdown,
+                        Instant.parse("2024-01-15T11:00:00Z"),
+                        Instant.parse("2024-01-15T10:00:00Z"));
+        when(deliveryFeeService.calculate(eq(TARTU), eq(BIKE), any())).thenReturn(response);
+
+        mockMvc.perform(
+                        get("/api/v1/delivery-fee")
+                                .param("city", "TARTU")
+                                .param("vehicleType", "BIKE")
+                                .param("datetime", "2024-01-15T14:00:00+03:00"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalFee").value(2.5));
+    }
 }

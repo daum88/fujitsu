@@ -299,6 +299,22 @@ class FeeRuleServiceTest {
     }
 
     @Test
+    void updateBaseFee_keepingItsOwnWindow_doesNotConflict() {
+        BaseFeeRule existing = baseRule(TALLINN, CAR, "4.00", TestFixtures.EPOCH, null);
+        existing.setId(1L);
+        when(baseFeeRuleRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(baseFeeRuleRepository.findAllByCityAndVehicleType(TALLINN, CAR))
+                .thenReturn(List.of(existing));
+
+        BaseFeeRuleRequest request =
+                new BaseFeeRuleRequest(TALLINN, CAR, bd("4.50"), TestFixtures.EPOCH, null);
+
+        BaseFeeRuleResponse response = service.updateBaseFee(1L, request);
+
+        assertThat(response.fee()).isEqualByComparingTo("4.50");
+    }
+
+    @Test
     void updateExtraFee_overlappingWindow_throwsConflict() {
         ExtraFeeRule existing = phenomenonRule(BIKE, RAIN, "0.50", false);
         when(extraFeeRuleRepository.findById(1L)).thenReturn(Optional.of(existing));

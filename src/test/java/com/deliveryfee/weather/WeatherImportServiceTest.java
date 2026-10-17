@@ -231,6 +231,92 @@ class WeatherImportServiceTest {
                 .containsExactlyInAnyOrder("Tallinn-Harku", "Tartu-Tõravere");
     }
 
+    @Test
+    void importLatest_duplicateStationInFeed_isImportedOnce() {
+        enqueue(
+                """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <observations timestamp="1762000000">
+                  <station>
+                    <name>Tallinn-Harku</name>
+                    <airtemperature>-2.5</airtemperature>
+                    <windspeed>4.5</windspeed>
+                  </station>
+                  <station>
+                    <name>Tartu-Tõravere</name>
+                    <airtemperature>-12.0</airtemperature>
+                    <windspeed>3.4</windspeed>
+                  </station>
+                  <station>
+                    <name>Pärnu</name>
+                    <airtemperature>1.5</airtemperature>
+                    <windspeed>3.0</windspeed>
+                  </station>
+                  <station>
+                    <name>Pärnu</name>
+                    <airtemperature>1.5</airtemperature>
+                    <windspeed>3.0</windspeed>
+                  </station>
+                </observations>
+                """);
+
+        ImportResult result = service.importLatest();
+
+        assertThat(result.imported()).isEqualTo(3);
+        assertThat(result.skipped()).isEqualTo(1);
+        assertThat(repository.count()).isEqualTo(3);
+    }
+
+    @Test
+    void importLatest_nonNumericTemperature_isSkipped() {
+        enqueue(
+                """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <observations timestamp="1762000000">
+                  <station>
+                    <name>Tallinn-Harku</name>
+                    <airtemperature>N/A</airtemperature>
+                    <windspeed>4.5</windspeed>
+                  </station>
+                  <station>
+                    <name>Tartu-Tõravere</name>
+                    <airtemperature>-12.0</airtemperature>
+                    <windspeed>3.4</windspeed>
+                  </station>
+                  <station>
+                    <name>Pärnu</name>
+                    <airtemperature>1.5</airtemperature>
+                    <windspeed>3.0</windspeed>
+                  </station>
+                </observations>
+                """);
+
+        ImportResult result = service.importLatest();
+
+        assertThat(result.imported()).isEqualTo(2);
+        assertThat(result.skipped()).isEqualTo(1);
+        assertThat(repository.findAll())
+                .extracting(WeatherObservation::getStationName)
+                .containsExactlyInAnyOrder("Tartu-Tõravere", "Pärnu");
+    }
+
+    @Test
+    void importLatest_emptyStationList_importsNothingAndReportsAllMissing() {
+        enqueue(
+                """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <observations timestamp="1762000000">
+                </observations>
+                """);
+
+        ImportResult result = service.importLatest();
+
+        assertThat(result.imported()).isZero();
+        assertThat(result.missingStations())
+                .containsExactlyInAnyOrder("Tallinn-Harku", "Tartu-Tõravere", "Pärnu");
+        assertThat(repository.count()).isZero();
+    }
+
     private void enqueueSample() {
         enqueue(readResource("weather-sample.xml"));
     }

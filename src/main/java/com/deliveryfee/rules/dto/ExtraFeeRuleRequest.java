@@ -61,4 +61,14 @@ public record ExtraFeeRuleRequest(
     public boolean isMaxInclusiveValid() {
         return maxValue == null || maxInclusive != null;
     }
+
+    /** {@code minValue} must not exceed {@code maxValue}. */
+    @JsonIgnore
+    @AssertTrue(message = "minValue must not exceed maxValue")
+    public boolean isRangeValid() {
+        if (minValue == null || maxValue == null) {
+            return true;
+        }
+        return minValue.compareTo(maxValue) <= 0;
+    }
 }

@@ -51,18 +51,26 @@ public class WeatherImportService {
         }
         Instant observedAt = Instant.ofEpochSecond(observations.timestamp());
 
+        List<StationXml> stations =
+                observations.stations() == null ? List.of() : observations.stations();
         List<StationXml> relevantStations =
-                observations.stations().stream()
-                        .filter(station -> City.isKnownStation(station.name()))
-                        .toList();
+                stations.stream().filter(station -> City.isKnownStation(station.name())).toList();
 
         Map<String, Instant> latestPerStation = latestObservedAtPerStation();
         Set<String> missingStations = new HashSet<>(City.stationNames());
 
         List<WeatherObservation> newObservations = new ArrayList<>();
+        Set<String> alreadySeen = new HashSet<>();
         int skipped = 0;
         for (StationXml station : relevantStations) {
             missingStations.remove(station.name());
+
+            // Defensive: a feed may list the same station twice; only the first occurrence is kept
+            // so the unique (station, observed_at) constraint is never violated by one batch.
+            if (!alreadySeen.add(station.name())) {
+                skipped++;
+                continue;
+            }
 
             Instant latest = latestPerStation.get(station.name());
             if (latest != null && !observedAt.isAfter(latest)) {

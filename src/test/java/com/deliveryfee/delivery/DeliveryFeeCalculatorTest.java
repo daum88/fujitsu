@@ -138,4 +138,17 @@ class DeliveryFeeCalculatorTest {
         assertThat(breakdown.total()).isEqualByComparingTo("4.00");
         assertThat(breakdown.windSpeedExtraFee()).isEqualByComparingTo("0.00");
     }
+
+    @Test
+    void calculate_noActiveBaseFeeRule_throwsIllegalState() {
+        when(baseFeeRuleRepository.findActiveRules(TARTU, BIKE, AT)).thenReturn(List.of());
+
+        WeatherObservation observation =
+                observation("Tartu-Tõravere", bd("5.0"), bd("5.0"), null, AT);
+        DeliveryContext ctx = new DeliveryContext(TARTU, BIKE, AT, observation);
+
+        assertThatThrownBy(() -> calculator.calculate(ctx))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("No active base fee rule");
+    }
 }

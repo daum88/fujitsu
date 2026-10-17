@@ -250,6 +250,18 @@ class RulesControllerTest {
     }
 
     @Test
+    void createExtraFee_minValueAboveMaxValue_returns400() throws Exception {
+        mockMvc.perform(
+                        post("/api/v1/rules/extra-fees")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
+                                        {"conditionType":"TEMPERATURE","vehicleType":"BIKE","minValue":20,"minInclusive":true,"maxValue":10,"maxInclusive":true,"fee":1.00,"validFrom":"2026-10-14T00:00:00Z"}
+                                        """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void createBaseFee_validToBeforeValidFrom_returns400() throws Exception {
         mockMvc.perform(
                         post("/api/v1/rules/base-fees")
