@@ -166,6 +166,23 @@ class WeatherImportServiceTest {
         assertThat(repository.count()).isZero();
     }
 
+    @Test
+    void importLatest_missingTimestamp_throwsAndPersistsNothing() {
+        enqueue(
+                """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <observations timestamp="0">
+                  <station>
+                    <name>Tallinn-Harku</name>
+                    <airtemperature>-2.5</airtemperature>
+                  </station>
+                </observations>
+                """);
+
+        assertThatThrownBy(() -> service.importLatest()).isInstanceOf(IllegalStateException.class);
+        assertThat(repository.count()).isZero();
+    }
+
     private void enqueueSample() {
         enqueue(readResource("weather-sample.xml"));
     }

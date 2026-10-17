@@ -121,4 +121,23 @@ class DeliveryFeeControllerTest {
                                 .param("datetime", "2999-01-01T00:00:00Z"))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void calculate_unexpectedError_returns500WithGenericMessageAndNoInternals() throws Exception {
+        when(deliveryFeeService.calculate(any(), any(), any()))
+                .thenThrow(new RuntimeException("sensitive internal detail"));
+
+        mockMvc.perform(
+                        get("/api/v1/delivery-fee")
+                                .param("city", "TARTU")
+                                .param("vehicleType", "BIKE"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.detail").value("An unexpected error occurred"))
+                .andExpect(
+                        jsonPath("$.detail")
+                                .value(
+                                        org.hamcrest.Matchers.not(
+                                                org.hamcrest.Matchers.containsString(
+                                                        "sensitive"))));
+    }
 }

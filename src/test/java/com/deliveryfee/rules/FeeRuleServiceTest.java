@@ -283,4 +283,43 @@ class FeeRuleServiceTest {
         assertThatThrownBy(() -> service.createExtraFee(request))
                 .isInstanceOf(ConflictException.class);
     }
+
+    @Test
+    void updateBaseFee_overlappingWindow_throwsConflict() {
+        BaseFeeRule existing = baseRule(TALLINN, CAR, "4.00", TestFixtures.EPOCH, null);
+        when(baseFeeRuleRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(baseFeeRuleRepository.findAllByCityAndVehicleType(TARTU, CAR))
+                .thenReturn(List.of(baseRule(TARTU, CAR, "3.00", TestFixtures.EPOCH, null)));
+
+        BaseFeeRuleRequest request =
+                new BaseFeeRuleRequest(TARTU, CAR, bd("3.50"), FROM_2010, null);
+
+        assertThatThrownBy(() -> service.updateBaseFee(1L, request))
+                .isInstanceOf(ConflictException.class);
+    }
+
+    @Test
+    void updateExtraFee_overlappingWindow_throwsConflict() {
+        ExtraFeeRule existing = phenomenonRule(BIKE, RAIN, "0.50", false);
+        when(extraFeeRuleRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(extraFeeRuleRepository.findAllByConditionTypeAndVehicleType(PHENOMENON, BIKE))
+                .thenReturn(List.of(phenomenonRule(BIKE, RAIN, "1.00", false)));
+
+        ExtraFeeRuleRequest request =
+                new ExtraFeeRuleRequest(
+                        PHENOMENON,
+                        BIKE,
+                        null,
+                        null,
+                        null,
+                        null,
+                        RAIN,
+                        bd("1.50"),
+                        false,
+                        FROM_2010,
+                        null);
+
+        assertThatThrownBy(() -> service.updateExtraFee(1L, request))
+                .isInstanceOf(ConflictException.class);
+    }
 }

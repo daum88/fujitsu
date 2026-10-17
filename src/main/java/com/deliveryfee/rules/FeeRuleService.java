@@ -111,7 +111,7 @@ public class FeeRuleService {
                 baseFeeRuleRepository
                         .findAllByCityAndVehicleType(request.city(), request.vehicleType())
                         .stream()
-                        .filter(rule -> excludeId == null || !rule.getId().equals(excludeId))
+                        .filter(rule -> excludeId == null || !excludeId.equals(rule.getId()))
                         .anyMatch(
                                 rule ->
                                         IntervalUtils.overlaps(
@@ -135,7 +135,7 @@ public class FeeRuleService {
                         .findAllByConditionTypeAndVehicleType(
                                 request.conditionType(), request.vehicleType())
                         .stream()
-                        .filter(rule -> excludeId == null || !rule.getId().equals(excludeId))
+                        .filter(rule -> excludeId == null || !excludeId.equals(rule.getId()))
                         .filter(
                                 rule ->
                                         IntervalUtils.overlaps(

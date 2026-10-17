@@ -16,6 +16,7 @@ import static com.deliveryfee.common.PhenomenonCategory.RAIN;
 import static com.deliveryfee.common.PhenomenonCategory.SNOW_SLEET;
 import static com.deliveryfee.common.VehicleType.BIKE;
 import static com.deliveryfee.common.VehicleType.CAR;
+import static com.deliveryfee.common.VehicleType.SCOOTER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -117,5 +118,24 @@ class DeliveryFeeCalculatorTest {
         assertThatThrownBy(() -> calculator.calculate(ctx))
                 .isInstanceOf(ForbiddenVehicleUsageException.class)
                 .hasMessage(BusinessMessages.FORBIDDEN_VEHICLE);
+    }
+
+    @Test
+    void calculate_scooterIgnoresWindExtraFee() {
+        when(baseFeeRuleRepository.findActiveRules(TALLINN, SCOOTER, AT))
+                .thenReturn(List.of(baseRule(TALLINN, SCOOTER, "3.50", TestFixtures.EPOCH, null)));
+        when(extraFeeRuleRepository.findActiveRules(SCOOTER, TEMPERATURE, AT))
+                .thenReturn(
+                        List.of(temperatureRule(SCOOTER, bd("-10"), true, bd("0"), true, "0.50")));
+        when(extraFeeRuleRepository.findActiveRules(SCOOTER, WIND, AT)).thenReturn(List.of());
+        when(extraFeeRuleRepository.findActiveRules(SCOOTER, PHENOMENON, AT)).thenReturn(List.of());
+
+        WeatherObservation windy = observation("Tallinn-Harku", bd("-5.0"), bd("21.0"), null, AT);
+        DeliveryContext ctx = new DeliveryContext(TALLINN, SCOOTER, AT, windy);
+
+        FeeBreakdown breakdown = calculator.calculate(ctx);
+
+        assertThat(breakdown.total()).isEqualByComparingTo("4.00");
+        assertThat(breakdown.windSpeedExtraFee()).isEqualByComparingTo("0.00");
     }
 }

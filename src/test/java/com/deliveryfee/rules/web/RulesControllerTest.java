@@ -236,4 +236,37 @@ class RulesControllerTest {
                                         """))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void createExtraFee_maxValueWithoutInclusiveFlag_returns400() throws Exception {
+        mockMvc.perform(
+                        post("/api/v1/rules/extra-fees")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
+                                        {"conditionType":"TEMPERATURE","vehicleType":"BIKE","maxValue":0,"fee":1.00,"validFrom":"2026-10-14T00:00:00Z"}
+                                        """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createBaseFee_validToBeforeValidFrom_returns400() throws Exception {
+        mockMvc.perform(
+                        post("/api/v1/rules/base-fees")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
+                                        {"city":"TALLINN","vehicleType":"CAR","fee":4.00,"validFrom":"2020-01-01T00:00:00Z","validTo":"2019-01-01T00:00:00Z"}
+                                        """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createBaseFee_malformedJsonBody_returns400() throws Exception {
+        mockMvc.perform(
+                        post("/api/v1/rules/base-fees")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{ this is not valid json"))
+                .andExpect(status().isBadRequest());
+    }
 }
