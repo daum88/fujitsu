@@ -1,5 +1,6 @@
 package com.deliveryfee.weather;
 
+import com.deliveryfee.common.City;
 import java.math.BigDecimal;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
@@ -33,14 +34,14 @@ public class DemoDataSeeder implements ApplicationRunner {
     }
 
     private void seedWinter() {
-        insert("Tallinn-Harku", "-5.0", "5.0", "Light snow shower", WINTER);
-        insert("Tartu-Tõravere", "-12.0", "4.0", "Snow", WINTER);
-        insert("Pärnu", "1.0", "15.0", "Moderate rain", WINTER);
+        insert(City.TALLINN.getStationName(), "-5.0", "5.0", "Light snow shower", WINTER);
+        insert(City.TARTU.getStationName(), "-12.0", "4.0", "Snow", WINTER);
+        insert(City.PÄRNU.getStationName(), "1.0", "15.0", "Moderate rain", WINTER);
     }
 
     private void seedStorm() {
-        insert("Tallinn-Harku", "20.0", "22.0", "Thunderstorm", STORM);
-        insert("Pärnu", "25.0", "8.0", "Cloudy with clear spells", STORM);
+        insert(City.TALLINN.getStationName(), "20.0", "22.0", "Thunderstorm", STORM);
+        insert(City.PÄRNU.getStationName(), "25.0", "8.0", "Cloudy with clear spells", STORM);
     }
 
     private void insert(

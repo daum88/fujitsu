@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 
 @ExtendWith(MockitoExtension.class)
 class FeeRuleServiceTest {
@@ -149,7 +150,7 @@ class FeeRuleServiceTest {
 
     @Test
     void listBaseFees_returnsMappedRules() {
-        when(baseFeeRuleRepository.findAll())
+        when(baseFeeRuleRepository.findAll(any(Sort.class)))
                 .thenReturn(List.of(baseRule(TALLINN, CAR, "4.00", TestFixtures.EPOCH, null)));
 
         List<BaseFeeRuleResponse> result = service.listBaseFees();
@@ -185,7 +186,7 @@ class FeeRuleServiceTest {
 
     @Test
     void listExtraFees_returnsMappedRules() {
-        when(extraFeeRuleRepository.findAll())
+        when(extraFeeRuleRepository.findAll(any(Sort.class)))
                 .thenReturn(List.of(phenomenonRule(BIKE, RAIN, "0.50", false)));
 
         List<ExtraFeeRuleResponse> result = service.listExtraFees();

@@ -74,6 +74,7 @@ public class DeliveryFeeCalculator {
                 case AIR_TEMPERATURE -> temperature = fee.amount();
                 case WIND_SPEED -> wind = fee.amount();
                 case WEATHER_PHENOMENON -> phenomenon = fee.amount();
+                default -> throw new IllegalStateException("Unhandled fee type: " + fee.type());
             }
         }
 

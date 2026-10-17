@@ -26,14 +26,14 @@ public interface WeatherObservationRepository extends JpaRepository<WeatherObser
     /**
      * Returns the newest {@code observedAt} per station in a single grouped query.
      *
-     * <p>Each element is {@code [stationName, max(observedAt)]}. Used to skip already-imported feed
-     * entries without an N+1 lookup.
+     * <p>Used to skip already-imported feed entries without an N+1 lookup.
      *
-     * @return one row per station with its latest observation time
+     * @return one projection per station with its latest observation time
      */
     @Query(
-            "select w.stationName, max(w.observedAt) from WeatherObservation w group by w.stationName")
-    List<Object[]> findLatestObservedAtPerStation();
+            "select w.stationName as stationName, max(w.observedAt) as observedAt"
+                    + " from WeatherObservation w group by w.stationName")
+    List<StationLatestObservation> findLatestObservedAtPerStation();
 
     /**
      * Checks whether an observation for a station and instant already exists (idempotent seeding).

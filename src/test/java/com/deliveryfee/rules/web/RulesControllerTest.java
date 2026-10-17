@@ -281,4 +281,52 @@ class RulesControllerTest {
                                 .content("{ this is not valid json"))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void createBaseFee_missingValidFromWithValidTo_returns400() throws Exception {
+        mockMvc.perform(
+                        post("/api/v1/rules/base-fees")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
+                                        {"city":"TALLINN","vehicleType":"CAR","fee":4.00,"validTo":"2020-01-01T00:00:00Z"}
+                                        """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createExtraFee_missingValidFromWithValidTo_returns400() throws Exception {
+        mockMvc.perform(
+                        post("/api/v1/rules/extra-fees")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
+                                        {"conditionType":"TEMPERATURE","vehicleType":"BIKE","minValue":-10,"minInclusive":true,"fee":1.00,"validTo":"2020-01-01T00:00:00Z"}
+                                        """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createExtraFee_temperatureWithPhenomenonCategory_returns400() throws Exception {
+        mockMvc.perform(
+                        post("/api/v1/rules/extra-fees")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
+                                        {"conditionType":"TEMPERATURE","vehicleType":"BIKE","phenomenonCategory":"RAIN","fee":0.50,"validFrom":"2026-10-14T00:00:00Z"}
+                                        """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createExtraFee_phenomenonWithNumericBounds_returns400() throws Exception {
+        mockMvc.perform(
+                        post("/api/v1/rules/extra-fees")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        """
+                                        {"conditionType":"PHENOMENON","vehicleType":"BIKE","minValue":-10,"minInclusive":true,"fee":0.50,"validFrom":"2026-10-14T00:00:00Z"}
+                                        """))
+                .andExpect(status().isBadRequest());
+    }
 }

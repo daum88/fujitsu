@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 /**
@@ -53,10 +52,13 @@ public class WeatherImportService {
      * Imports the latest observations from the configured weather feed. The operation is
      * append-only and idempotent: entries already stored (or missing required data) are skipped.
      *
+     * <p>The HTTP fetch and parse run outside a transaction so a slow upstream feed (up to the
+     * configured read timeout) never holds a database connection; only the final {@code saveAll}
+     * (itself transactional) writes.
+     *
      * @return a summary of imported, skipped and missing stations
      * @throws IllegalStateException when the feed cannot be fetched or parsed
      */
-    @Transactional
     public ImportResult importLatest() {
         long start = System.nanoTime();
         ObservationsXml observations = parse(fetchFeed());
@@ -162,7 +164,10 @@ public class WeatherImportService {
 
     private Map<String, Instant> latestObservedAtPerStation() {
         return weatherRepository.findLatestObservedAtPerStation().stream()
-                .collect(Collectors.toMap(row -> (String) row[0], row -> (Instant) row[1]));
+                .collect(
+                        Collectors.toMap(
+                                StationLatestObservation::getStationName,
+                                StationLatestObservation::getObservedAt));
     }
 
     private WeatherObservation toObservation(

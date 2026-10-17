@@ -39,4 +39,16 @@ class RequestIdFilterTest {
         assertThat(response.getHeader(RequestIdFilter.HEADER)).isEqualTo("caller-supplied-id");
         assertThat(request.getAttribute(RequestIdFilter.ATTRIBUTE)).isEqualTo("caller-supplied-id");
     }
+
+    @Test
+    void sanitizesIncomingHeader() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(RequestIdFilter.HEADER, "caller id\nwith:bad/chars");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        FilterChain chain = (req, res) -> {};
+
+        filter.doFilter(request, response, chain);
+
+        assertThat(response.getHeader(RequestIdFilter.HEADER)).isEqualTo("calleridwithbadchars");
+    }
 }

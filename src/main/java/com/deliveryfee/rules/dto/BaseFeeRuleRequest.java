@@ -22,6 +22,6 @@ public record BaseFeeRuleRequest(
     @JsonIgnore
     @AssertTrue(message = "validTo must be after validFrom")
     public boolean isValidityValid() {
-        return validTo == null || validTo.isAfter(validFrom);
+        return validFrom == null || validTo == null || validTo.isAfter(validFrom);
     }
 }

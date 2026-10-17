@@ -23,14 +23,13 @@ public class RequestIdFilter extends OncePerRequestFilter {
     public static final String ATTRIBUTE = "requestId";
     public static final String MDC_KEY = "requestId";
 
+    private static final int MAX_REQUEST_ID_LENGTH = 128;
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String requestId = request.getHeader(HEADER);
-        if (requestId == null || requestId.isBlank()) {
-            requestId = UUID.randomUUID().toString();
-        }
+        String requestId = resolveRequestId(request.getHeader(HEADER));
         MDC.put(MDC_KEY, requestId);
         request.setAttribute(ATTRIBUTE, requestId);
         response.setHeader(HEADER, requestId);
@@ -39,5 +38,22 @@ public class RequestIdFilter extends OncePerRequestFilter {
         } finally {
             MDC.remove(MDC_KEY);
         }
+    }
+
+    /**
+     * Reuses a caller-supplied correlation id after sanitizing it (control characters removed,
+     * length bounded) so it cannot be used for log or header injection; generates a UUID otherwise.
+     */
+    private static String resolveRequestId(String header) {
+        if (header == null || header.isBlank()) {
+            return UUID.randomUUID().toString();
+        }
+        String sanitized = header.replaceAll("[^A-Za-z0-9._-]", "");
+        if (sanitized.isBlank()) {
+            return UUID.randomUUID().toString();
+        }
+        return sanitized.length() <= MAX_REQUEST_ID_LENGTH
+                ? sanitized
+                : sanitized.substring(0, MAX_REQUEST_ID_LENGTH);
     }
 }

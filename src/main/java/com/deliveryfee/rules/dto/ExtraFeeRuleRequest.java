@@ -25,13 +25,23 @@ public record ExtraFeeRuleRequest(
         @NotNull Instant validFrom,
         Instant validTo) {
 
-    /** Exactly one of numeric bounds or phenomenon category must be present. */
+    /**
+     * The condition payload must match the condition type: numeric bounds for temperature/wind, a
+     * phenomenon category for phenomenon (and never both).
+     */
     @JsonIgnore
-    @AssertTrue(message = "Exactly one of numeric bounds or phenomenon category must be present")
-    public boolean isConditionSpecified() {
-        boolean numeric = minValue != null || maxValue != null;
-        boolean phenomenon = phenomenonCategory != null;
-        return numeric ^ phenomenon;
+    @AssertTrue(
+            message =
+                    "condition payload must match conditionType: numeric bounds for"
+                            + " TEMPERATURE/WIND, phenomenonCategory for PHENOMENON")
+    public boolean isConditionPayloadValid() {
+        if (conditionType == null) {
+            return true; // @NotNull reports the actual problem
+        }
+        if (conditionType == ConditionType.PHENOMENON) {
+            return phenomenonCategory != null && minValue == null && maxValue == null;
+        }
+        return phenomenonCategory == null && (minValue != null || maxValue != null);
     }
 
     /** A fee is required unless the rule forbids the vehicle. */
@@ -45,7 +55,7 @@ public record ExtraFeeRuleRequest(
     @JsonIgnore
     @AssertTrue(message = "validTo must be after validFrom")
     public boolean isValidityValid() {
-        return validTo == null || validTo.isAfter(validFrom);
+        return validFrom == null || validTo == null || validTo.isAfter(validFrom);
     }
 
     /** {@code minInclusive} is required when {@code minValue} is present. */

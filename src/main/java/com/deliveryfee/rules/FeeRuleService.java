@@ -9,6 +9,7 @@ import com.deliveryfee.rules.dto.ExtraFeeRuleRequest;
 import com.deliveryfee.rules.dto.ExtraFeeRuleResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,9 @@ public class FeeRuleService {
     /** Lists all base fee rules. */
     @Transactional(readOnly = true)
     public List<BaseFeeRuleResponse> listBaseFees() {
-        return baseFeeRuleRepository.findAll().stream().map(BaseFeeRuleResponse::from).toList();
+        return baseFeeRuleRepository.findAll(Sort.by("city", "vehicleType", "validFrom")).stream()
+                .map(BaseFeeRuleResponse::from)
+                .toList();
     }
 
     /** Creates a base fee rule after verifying there is no overlapping active window. */
@@ -76,7 +79,11 @@ public class FeeRuleService {
     /** Lists all extra fee rules. */
     @Transactional(readOnly = true)
     public List<ExtraFeeRuleResponse> listExtraFees() {
-        return extraFeeRuleRepository.findAll().stream().map(ExtraFeeRuleResponse::from).toList();
+        return extraFeeRuleRepository
+                .findAll(Sort.by("conditionType", "vehicleType", "validFrom"))
+                .stream()
+                .map(ExtraFeeRuleResponse::from)
+                .toList();
     }
 
     /** Creates an extra fee rule after verifying there is no conflicting overlapping rule. */

@@ -16,9 +16,10 @@ public class ImportStatus {
     private volatile String lastError;
 
     /** Records a successful import run. */
-    public void recordSuccess() {
-        this.lastSuccessAt = Instant.now();
-        this.lastAttemptAt = lastSuccessAt;
+    public synchronized void recordSuccess() {
+        Instant now = Instant.now();
+        this.lastSuccessAt = now;
+        this.lastAttemptAt = now;
         this.lastError = null;
     }
 
@@ -27,7 +28,7 @@ public class ImportStatus {
      *
      * @param message a short description of the failure
      */
-    public void recordFailure(String message) {
+    public synchronized void recordFailure(String message) {
         this.lastAttemptAt = Instant.now();
         this.lastError = message;
     }
