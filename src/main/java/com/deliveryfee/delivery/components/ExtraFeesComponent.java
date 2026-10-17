@@ -19,10 +19,14 @@ import java.util.List;
  */
 public class ExtraFeesComponent implements FeeComponent {
 
+    // region Dependencies
     private final ConditionType conditionType;
     private final ConditionMatcher matcher;
     private final ExtraFeeRuleRepository extraFeeRuleRepository;
 
+    // endregion
+
+    // region Public API
     /**
      * @param conditionType which weather condition this component evaluates
      * @param matcher strategy deciding whether a rule's condition matches the observation
@@ -55,6 +59,9 @@ public class ExtraFeesComponent implements FeeComponent {
         return new FeeResult.Fee(BigDecimal.ZERO, feeTypeFor(conditionType));
     }
 
+    // endregion
+
+    // region Private helpers
     private static FeeType feeTypeFor(ConditionType conditionType) {
         return switch (conditionType) {
             case TEMPERATURE -> FeeType.AIR_TEMPERATURE;
@@ -62,4 +69,5 @@ public class ExtraFeesComponent implements FeeComponent {
             case PHENOMENON -> FeeType.WEATHER_PHENOMENON;
         };
     }
+    // endregion
 }

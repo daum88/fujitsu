@@ -82,6 +82,7 @@ public class ExtraFeeRule extends AbstractFeeRule {
         this.forbidden = forbidden;
     }
 
+    // region Public API
     /**
      * Checks whether this rule's condition predicate conflicts with another rule's predicate, i.e.
      * whether a single observation could satisfy both.
@@ -100,6 +101,9 @@ public class ExtraFeeRule extends AbstractFeeRule {
         return !rangeEndsBeforeStart(this, other) && !rangeEndsBeforeStart(other, this);
     }
 
+    // endregion
+
+    // region Private helpers
     private static boolean rangeEndsBeforeStart(ExtraFeeRule first, ExtraFeeRule second) {
         if (first.maxValue == null || second.minValue == null) {
             return false;
@@ -114,4 +118,5 @@ public class ExtraFeeRule extends AbstractFeeRule {
         return !(Boolean.TRUE.equals(first.maxInclusive)
                 && Boolean.TRUE.equals(second.minInclusive));
     }
+    // endregion
 }

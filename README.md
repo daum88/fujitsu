@@ -114,6 +114,7 @@ integration tests.
 | Information disclosure | `ProblemDetail` with fixed messages; stack traces logged server-side only |
 | SSRF | Import URL from validated config only (HTTPS); never from request input |
 | Resource exhaustion | Connect/read timeouts; only the 3 needed stations are mapped |
+| Supply chain | Versions managed by the Spring Boot BOM only; OWASP dependency-check is a documented follow-up |
 
 Explicit non-goal: authentication/authorization (out of task scope; noted as production follow-up).
 

@@ -20,9 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class FeeRuleService {
 
+    // region Dependencies
     private final BaseFeeRuleRepository baseFeeRuleRepository;
     private final ExtraFeeRuleRepository extraFeeRuleRepository;
 
+    // endregion
+
+    // region Public API
     /** Lists all base fee rules. */
     @Transactional(readOnly = true)
     public List<BaseFeeRuleResponse> listBaseFees() {
@@ -106,6 +110,9 @@ public class FeeRuleService {
         extraFeeRuleRepository.delete(existing);
     }
 
+    // endregion
+
+    // region Private helpers
     private void ensureNoBaseFeeOverlap(BaseFeeRuleRequest request, Long excludeId) {
         boolean overlaps =
                 baseFeeRuleRepository
@@ -181,4 +188,5 @@ public class FeeRuleService {
         existing.setValidFrom(request.validFrom());
         existing.setValidTo(request.validTo());
     }
+    // endregion
 }

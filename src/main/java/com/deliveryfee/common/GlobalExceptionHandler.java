@@ -30,6 +30,7 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    // region Public API
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         List<String> errors =
@@ -111,6 +112,9 @@ public class GlobalExceptionHandler {
         return problem(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", List.of());
     }
 
+    // endregion
+
+    // region Private helpers
     private static ProblemDetail problem(HttpStatus status, String detail, List<String> errors) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
         String requestId = currentRequestId();
@@ -148,4 +152,5 @@ public class GlobalExceptionHandler {
     private static String formatFieldError(FieldError error) {
         return error.getField() + ": " + error.getDefaultMessage();
     }
+    // endregion
 }

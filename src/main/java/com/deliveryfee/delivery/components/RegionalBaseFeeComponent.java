@@ -9,8 +9,12 @@ import com.deliveryfee.rules.BaseFeeRuleRepository;
 /** Resolves the regional base fee (RBF) from the active base fee rule for the city and vehicle. */
 public class RegionalBaseFeeComponent implements FeeComponent {
 
+    // region Dependencies
     private final BaseFeeRuleRepository baseFeeRuleRepository;
 
+    // endregion
+
+    // region Public API
     /**
      * @param baseFeeRuleRepository source of regional base fee rules
      */
@@ -33,4 +37,5 @@ public class RegionalBaseFeeComponent implements FeeComponent {
                                                 + "/"
                                                 + ctx.vehicle()));
     }
+    // endregion
 }

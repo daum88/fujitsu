@@ -30,8 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class BaseFeeRuleController {
 
+    // region Dependencies
     private final FeeRuleService feeRuleService;
 
+    // endregion
+
+    // region Public API
     /**
      * @return all base fee rules
      */
@@ -123,4 +127,5 @@ public class BaseFeeRuleController {
     public void delete(@PathVariable Long id) {
         feeRuleService.deleteBaseFee(id);
     }
+    // endregion
 }

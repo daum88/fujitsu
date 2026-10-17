@@ -27,8 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class DeliveryFeeController {
 
+    // region Dependencies
     private final DeliveryFeeService deliveryFeeService;
 
+    // endregion
+
+    // region Public API
     /**
      * Calculates the delivery fee.
      *
@@ -84,4 +88,5 @@ public class DeliveryFeeController {
         Instant at = datetime == null ? Instant.now() : datetime;
         return deliveryFeeService.calculate(city, vehicleType, at);
     }
+    // endregion
 }

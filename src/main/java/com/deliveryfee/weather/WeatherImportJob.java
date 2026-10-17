@@ -24,11 +24,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class WeatherImportJob {
 
+    // region Constants
     private static final String LOG_PREFIX = "weather-import";
+    // endregion
 
+    // region Dependencies
     private final WeatherImportService importService;
     private final ImportStatus importStatus;
 
+    // endregion
+
+    // region Public API
     /** Hourly import driven by the configured cron expression. */
     @Scheduled(cron = "${app.weather-import.cron}")
     public void scheduledImport() {
@@ -41,6 +47,9 @@ public class WeatherImportJob {
         runImport();
     }
 
+    // endregion
+
+    // region Private helpers
     private void runImport() {
         long start = System.nanoTime();
         try {
@@ -57,4 +66,5 @@ public class WeatherImportJob {
                     e);
         }
     }
+    // endregion
 }

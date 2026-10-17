@@ -32,17 +32,23 @@ import org.springframework.web.client.RestClient;
 @Slf4j
 public class WeatherImportService {
 
+    // region Constants
     private static final String LOG_PREFIX = "weather-import";
 
     // Plausibility bounds guarding against sensor glitches and feed contract changes.
     private static final BigDecimal MIN_TEMPERATURE = new BigDecimal("-100");
     private static final BigDecimal MAX_TEMPERATURE = new BigDecimal("70");
     private static final BigDecimal MAX_WIND_SPEED = new BigDecimal("100");
+    // endregion
 
+    // region Dependencies
     private final RestClient weatherRestClient;
     private final XmlMapper xmlMapper;
     private final WeatherObservationRepository weatherRepository;
 
+    // endregion
+
+    // region Public API
     /**
      * Imports the latest observations from the configured weather feed. The operation is
      * append-only and idempotent: entries already stored (or missing required data) are skipped.
@@ -132,6 +138,9 @@ public class WeatherImportService {
         return new ImportResult(newObservations.size(), skipped, List.copyOf(missingStations));
     }
 
+    // endregion
+
+    // region Private helpers
     private String fetchFeed() {
         byte[] body = weatherRestClient.get().retrieve().body(byte[].class);
         if (body == null || body.length == 0) {
@@ -189,4 +198,5 @@ public class WeatherImportService {
             return null;
         }
     }
+    // endregion
 }

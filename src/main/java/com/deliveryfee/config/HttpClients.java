@@ -22,6 +22,7 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class HttpClients {
 
+    // region Public API
     /**
      * Builds the {@link RestClient} used by the weather import with configured timeouts.
      *
@@ -74,4 +75,5 @@ public class HttpClients {
         mapper.registerModule(module);
         return mapper;
     }
+    // endregion
 }

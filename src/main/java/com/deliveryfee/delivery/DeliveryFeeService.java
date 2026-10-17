@@ -16,9 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DeliveryFeeService {
 
+    // region Dependencies
     private final WeatherObservationService weatherObservationService;
     private final DeliveryFeeCalculator calculator;
 
+    // endregion
+
+    // region Public API
     /**
      * Calculates the delivery fee for the given city, vehicle and point in time.
      *
@@ -35,4 +39,5 @@ public class DeliveryFeeService {
         return DeliveryFeeResponse.of(
                 city, vehicleType, breakdown, at, observation.getObservedAt());
     }
+    // endregion
 }

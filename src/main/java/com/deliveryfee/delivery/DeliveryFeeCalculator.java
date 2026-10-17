@@ -20,8 +20,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class DeliveryFeeCalculator {
 
+    // region Dependencies
     private final List<FeeComponent> components;
 
+    // endregion
+
+    // region Public API
     /**
      * @param baseFeeRuleRepository source of regional base fee rules
      * @param extraFeeRuleRepository source of extra fee rules
@@ -75,4 +79,5 @@ public class DeliveryFeeCalculator {
 
         return FeeBreakdown.of(regionalBase, temperature, wind, phenomenon);
     }
+    // endregion
 }
