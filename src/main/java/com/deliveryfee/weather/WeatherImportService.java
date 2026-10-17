@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +33,11 @@ public class WeatherImportService {
 
     private static final String LOG_PREFIX = "weather-import";
 
+    // Plausibility bounds guarding against sensor glitches and feed contract changes.
+    private static final BigDecimal MIN_TEMPERATURE = new BigDecimal("-100");
+    private static final BigDecimal MAX_TEMPERATURE = new BigDecimal("70");
+    private static final BigDecimal MAX_WIND_SPEED = new BigDecimal("100");
+
     private final RestClient weatherRestClient;
     private final XmlMapper xmlMapper;
     private final WeatherObservationRepository weatherRepository;
@@ -50,6 +56,13 @@ public class WeatherImportService {
             throw new IllegalStateException("Weather feed timestamp is missing or invalid");
         }
         Instant observedAt = Instant.ofEpochSecond(observations.timestamp());
+        if (observedAt.isAfter(Instant.now().plus(1, ChronoUnit.DAYS))) {
+            // A timestamp far in the future usually means the feed switched units (seconds vs
+            // milliseconds) or the upstream clock is badly skewed; refuse it rather than storing
+            // an unusable/overflowing instant.
+            throw new IllegalStateException(
+                    "Weather feed timestamp is implausibly in the future: " + observedAt);
+        }
 
         List<StationXml> stations =
                 observations.stations() == null ? List.of() : observations.stations();
@@ -84,11 +97,26 @@ public class WeatherImportService {
                 skipped++;
                 continue;
             }
+            if (isImplausibleTemperature(temperature)) {
+                log.warn(
+                        "{}: {} implausible air temperature {}, skipped",
+                        LOG_PREFIX,
+                        station.name(),
+                        temperature);
+                skipped++;
+                continue;
+            }
 
             newObservations.add(toObservation(station, temperature, observedAt));
         }
 
         weatherRepository.saveAll(newObservations);
+        if (!missingStations.isEmpty()) {
+            log.warn(
+                    "{}: stations missing from feed (check station names / upstream changes): {}",
+                    LOG_PREFIX,
+                    missingStations);
+        }
         log.info(
                 "{}: imported={} skipped={} missingStations={}",
                 LOG_PREFIX,
@@ -128,9 +156,21 @@ public class WeatherImportService {
                 station.name(),
                 station.wmoCode(),
                 temperature,
-                parseBigDecimal(station.windSpeed()),
+                plausibleWind(parseBigDecimal(station.windSpeed())),
                 station.phenomenon(),
                 observedAt);
+    }
+
+    private boolean isImplausibleTemperature(BigDecimal temperature) {
+        return temperature.compareTo(MIN_TEMPERATURE) < 0
+                || temperature.compareTo(MAX_TEMPERATURE) > 0;
+    }
+
+    private BigDecimal plausibleWind(BigDecimal wind) {
+        if (wind != null && (wind.signum() < 0 || wind.compareTo(MAX_WIND_SPEED) > 0)) {
+            return null;
+        }
+        return wind;
     }
 
     private BigDecimal parseBigDecimal(String value) {
