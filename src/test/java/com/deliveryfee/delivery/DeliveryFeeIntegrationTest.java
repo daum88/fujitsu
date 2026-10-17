@@ -39,11 +39,12 @@ class DeliveryFeeIntegrationTest {
 
     @Test
     void specExample_tartuBike_returnsFourEuros() throws Exception {
+        // The exact worked example from the trial task: TARTU + BIKE, -2.1 C, 4.7 m/s.
         observationRepository.save(
                 observation(
                         "Tartu-Tõravere",
-                        bd("-5.0"),
-                        bd("5.0"),
+                        bd("-2.1"),
+                        bd("4.7"),
                         "Light snow shower",
                         Instant.parse("2024-01-15T10:00:00Z")));
 

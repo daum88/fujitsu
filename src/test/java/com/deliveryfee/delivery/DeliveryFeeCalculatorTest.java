@@ -73,7 +73,7 @@ class DeliveryFeeCalculatorTest {
                         BIKE,
                         AT,
                         observation(
-                                "Tartu-Tõravere", bd("-5.0"), bd("5.0"), "Light snow shower", AT));
+                                "Tartu-Tõravere", bd("-2.1"), bd("4.7"), "Light snow shower", AT));
 
         FeeBreakdown breakdown = calculator.calculate(ctx);
 
