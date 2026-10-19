@@ -2,7 +2,7 @@ package com.deliveryfee.delivery;
 
 import static com.deliveryfee.TestFixtures.bd;
 import static com.deliveryfee.TestFixtures.observation;
-import static com.deliveryfee.common.City.PÄRNU;
+import static com.deliveryfee.common.City.PARNU;
 import static com.deliveryfee.common.City.TALLINN;
 import static com.deliveryfee.common.City.TARTU;
 import static com.deliveryfee.common.VehicleType.BIKE;
@@ -96,9 +96,9 @@ class FeeCalculationMatrixTest {
                 arguments(TARTU, CAR, "5.0", "5.0", "Cloudy with clear spells", "3.50"),
                 arguments(TARTU, SCOOTER, "5.0", "5.0", "Cloudy with clear spells", "3.00"),
                 arguments(TARTU, BIKE, "5.0", "5.0", "Cloudy with clear spells", "2.50"),
-                arguments(PÄRNU, CAR, "5.0", "5.0", "Cloudy with clear spells", "3.00"),
-                arguments(PÄRNU, SCOOTER, "5.0", "5.0", "Cloudy with clear spells", "2.50"),
-                arguments(PÄRNU, BIKE, "5.0", "5.0", "Cloudy with clear spells", "2.00"),
+                arguments(PARNU, CAR, "5.0", "5.0", "Cloudy with clear spells", "3.00"),
+                arguments(PARNU, SCOOTER, "5.0", "5.0", "Cloudy with clear spells", "2.50"),
+                arguments(PARNU, BIKE, "5.0", "5.0", "Cloudy with clear spells", "2.00"),
                 // Cold + snow: -5 => +0.50 temperature, snow => +1.00
                 arguments(TALLINN, SCOOTER, "-5.0", "5.0", "Light snow shower", "5.00"),
                 arguments(TALLINN, BIKE, "-5.0", "5.0", "Light snow shower", "4.50"),
@@ -107,8 +107,8 @@ class FeeCalculationMatrixTest {
                 arguments(TARTU, BIKE, "-12.0", "4.0", "Snow", "4.50"),
                 // Rain + wind: bike pays wind (10-20) and rain; scooter pays only rain; car pays
                 // none
-                arguments(PÄRNU, BIKE, "5.0", "15.0", "Moderate rain", "3.00"),
-                arguments(PÄRNU, SCOOTER, "5.0", "15.0", "Moderate rain", "3.00"),
+                arguments(PARNU, BIKE, "5.0", "15.0", "Moderate rain", "3.00"),
+                arguments(PARNU, SCOOTER, "5.0", "15.0", "Moderate rain", "3.00"),
                 arguments(TALLINN, CAR, "5.0", "15.0", "Moderate rain", "4.00"));
     }
 
@@ -116,9 +116,9 @@ class FeeCalculationMatrixTest {
         return Stream.of(
                 // Wind > 20 m/s forbids bikes
                 arguments(TALLINN, BIKE, "20.0", "22.0", "Cloudy with clear spells"),
-                arguments(PÄRNU, BIKE, "5.0", "22.0", "Cloudy with clear spells"),
+                arguments(PARNU, BIKE, "5.0", "22.0", "Cloudy with clear spells"),
                 // Thunder / glaze / hail forbids scooters and bikes
                 arguments(TALLINN, SCOOTER, "20.0", "5.0", "Thunderstorm"),
-                arguments(PÄRNU, SCOOTER, "5.0", "5.0", "Glaze"));
+                arguments(PARNU, SCOOTER, "5.0", "5.0", "Glaze"));
     }
 }

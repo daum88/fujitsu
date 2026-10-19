@@ -32,7 +32,7 @@ public enum PhenomenonCategory {
         if (phenomenon == null) {
             return false;
         }
-        String normalized = phenomenon.toLowerCase(Locale.ROOT);
+        var normalized = phenomenon.toLowerCase(Locale.ROOT);
         return keywords.stream().anyMatch(normalized::contains);
     }
 
@@ -46,7 +46,7 @@ public enum PhenomenonCategory {
         if (phenomenon == null || phenomenon.isBlank()) {
             return null;
         }
-        for (PhenomenonCategory category : values()) {
+        for (var category : values()) {
             if (category.matches(phenomenon)) {
                 return category;
             }

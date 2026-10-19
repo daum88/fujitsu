@@ -59,16 +59,16 @@ public class DeliveryFeeCalculator {
      */
     public FeeBreakdown calculate(DeliveryContext ctx) {
         BigDecimal regionalBase = null;
-        BigDecimal temperature = BigDecimal.ZERO;
-        BigDecimal wind = BigDecimal.ZERO;
-        BigDecimal phenomenon = BigDecimal.ZERO;
+        var temperature = BigDecimal.ZERO;
+        var wind = BigDecimal.ZERO;
+        var phenomenon = BigDecimal.ZERO;
 
-        for (FeeComponent component : components) {
-            FeeResult result = component.evaluate(ctx);
+        for (var component : components) {
+            var result = component.evaluate(ctx);
             if (result instanceof FeeResult.Forbidden forbidden) {
                 throw new ForbiddenVehicleUsageException(forbidden.message());
             }
-            FeeResult.Fee fee = (FeeResult.Fee) result;
+            var fee = (FeeResult.Fee) result;
             switch (fee.type()) {
                 case REGIONAL_BASE -> regionalBase = fee.amount();
                 case AIR_TEMPERATURE -> temperature = fee.amount();

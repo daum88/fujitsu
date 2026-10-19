@@ -85,7 +85,7 @@ public class DeliveryFeeController {
                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                     @PastOrPresent
                     Instant datetime) {
-        Instant at = datetime == null ? Instant.now() : datetime;
+        var at = datetime == null ? Instant.now() : datetime;
         return deliveryFeeService.calculate(city, vehicleType, at);
     }
     // endregion

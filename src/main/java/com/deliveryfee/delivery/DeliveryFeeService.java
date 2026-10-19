@@ -3,8 +3,6 @@ package com.deliveryfee.delivery;
 import com.deliveryfee.common.City;
 import com.deliveryfee.common.VehicleType;
 import com.deliveryfee.delivery.dto.DeliveryFeeResponse;
-import com.deliveryfee.delivery.dto.FeeBreakdown;
-import com.deliveryfee.weather.WeatherObservation;
 import com.deliveryfee.weather.WeatherObservationService;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +31,8 @@ public class DeliveryFeeService {
      */
     @Transactional(readOnly = true)
     public DeliveryFeeResponse calculate(City city, VehicleType vehicleType, Instant at) {
-        WeatherObservation observation = weatherObservationService.latestFor(city, at);
-        FeeBreakdown breakdown =
+        var observation = weatherObservationService.latestFor(city, at);
+        var breakdown =
                 calculator.calculate(new DeliveryContext(city, vehicleType, at, observation));
         return DeliveryFeeResponse.of(
                 city, vehicleType, breakdown, at, observation.getObservedAt());

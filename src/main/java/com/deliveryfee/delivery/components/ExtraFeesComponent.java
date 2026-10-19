@@ -7,10 +7,8 @@ import com.deliveryfee.delivery.FeeComponent;
 import com.deliveryfee.delivery.FeeResult;
 import com.deliveryfee.delivery.FeeType;
 import com.deliveryfee.delivery.matcher.ConditionMatcher;
-import com.deliveryfee.rules.ExtraFeeRule;
 import com.deliveryfee.rules.ExtraFeeRuleRepository;
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Evaluates one extra fee condition (temperature, wind or phenomenon) against the active extra fee
@@ -43,14 +41,14 @@ public class ExtraFeesComponent implements FeeComponent {
 
     @Override
     public FeeResult evaluate(DeliveryContext ctx) {
-        List<ExtraFeeRule> rules =
+        var rules =
                 extraFeeRuleRepository.findActiveRules(
                         ctx.vehicle(), conditionType, ctx.requestedAt());
-        for (ExtraFeeRule rule : rules) {
+        for (var rule : rules) {
             if (!matcher.matches(rule, ctx)) {
                 continue;
             }
-            FeeType type = feeTypeFor(conditionType);
+            var type = feeTypeFor(conditionType);
             if (rule.isForbidden()) {
                 return new FeeResult.Forbidden(type, BusinessMessages.FORBIDDEN_VEHICLE);
             }

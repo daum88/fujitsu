@@ -91,8 +91,8 @@ public class ExtraFeeRule extends AbstractFeeRule {
      * @return {@code true} when the condition predicates overlap
      */
     public boolean overlapsCondition(ExtraFeeRule other) {
-        boolean thisPhenomenon = phenomenonCategory != null;
-        boolean otherPhenomenon = other.phenomenonCategory != null;
+        var thisPhenomenon = phenomenonCategory != null;
+        var otherPhenomenon = other.phenomenonCategory != null;
         if (thisPhenomenon || otherPhenomenon) {
             return thisPhenomenon
                     && otherPhenomenon
@@ -108,7 +108,7 @@ public class ExtraFeeRule extends AbstractFeeRule {
         if (first.maxValue == null || second.minValue == null) {
             return false;
         }
-        int comparison = first.maxValue.compareTo(second.minValue);
+        var comparison = first.maxValue.compareTo(second.minValue);
         if (comparison < 0) {
             return true;
         }

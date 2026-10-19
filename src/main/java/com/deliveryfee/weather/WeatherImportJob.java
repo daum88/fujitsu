@@ -51,12 +51,12 @@ public class WeatherImportJob {
 
     // region Private helpers
     private void runImport() {
-        long start = System.nanoTime();
+        var start = System.nanoTime();
         try {
             importService.importLatest();
             importStatus.recordSuccess();
         } catch (Exception e) {
-            long durationMs = (System.nanoTime() - start) / 1_000_000;
+            var durationMs = (System.nanoTime() - start) / 1_000_000;
             importStatus.recordFailure(e.getMessage());
             log.error(
                     "{}: import failed after {}ms; serving last-known data. Cause: {}",

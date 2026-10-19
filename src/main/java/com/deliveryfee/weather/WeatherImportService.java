@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,12 +59,12 @@ public class WeatherImportService {
      * @throws IllegalStateException when the feed cannot be fetched or parsed
      */
     public ImportResult importLatest() {
-        long start = System.nanoTime();
-        ObservationsXml observations = parse(fetchFeed());
+        var start = System.nanoTime();
+        var observations = parse(fetchFeed());
         if (observations.timestamp() <= 0) {
             throw new IllegalStateException("Weather feed timestamp is missing or invalid");
         }
-        Instant observedAt = Instant.ofEpochSecond(observations.timestamp());
+        var observedAt = Instant.ofEpochSecond(observations.timestamp());
         if (observedAt.isAfter(Instant.now().plus(1, ChronoUnit.DAYS))) {
             // A timestamp far in the future usually means the feed switched units (seconds vs
             // milliseconds) or the upstream clock is badly skewed; refuse it rather than storing
@@ -76,16 +75,16 @@ public class WeatherImportService {
 
         List<StationXml> stations =
                 observations.stations() == null ? List.of() : observations.stations();
-        List<StationXml> relevantStations =
+        var relevantStations =
                 stations.stream().filter(station -> City.isKnownStation(station.name())).toList();
 
-        Map<String, Instant> latestPerStation = latestObservedAtPerStation();
-        Set<String> missingStations = new HashSet<>(City.stationNames());
+        var latestPerStation = latestObservedAtPerStation();
+        var missingStations = new HashSet<>(City.stationNames());
 
-        List<WeatherObservation> newObservations = new ArrayList<>();
-        Set<String> alreadySeen = new HashSet<>();
-        int skipped = 0;
-        for (StationXml station : relevantStations) {
+        var newObservations = new ArrayList<WeatherObservation>();
+        var alreadySeen = new HashSet<String>();
+        var skipped = 0;
+        for (var station : relevantStations) {
             missingStations.remove(station.name());
 
             // Defensive: a feed may list the same station twice; only the first occurrence is kept
@@ -95,13 +94,13 @@ public class WeatherImportService {
                 continue;
             }
 
-            Instant latest = latestPerStation.get(station.name());
+            var latest = latestPerStation.get(station.name());
             if (latest != null && !observedAt.isAfter(latest)) {
                 skipped++;
                 continue;
             }
 
-            BigDecimal temperature = parseBigDecimal(station.airTemperature());
+            var temperature = parseBigDecimal(station.airTemperature());
             if (temperature == null) {
                 log.warn("{}: {} missing air temperature, skipped", LOG_PREFIX, station.name());
                 skipped++;
@@ -127,8 +126,8 @@ public class WeatherImportService {
                     LOG_PREFIX,
                     missingStations);
         }
-        long durationMs = (System.nanoTime() - start) / 1_000_000;
-        long feedAgeSeconds = Duration.between(observedAt, Instant.now()).getSeconds();
+        var durationMs = (System.nanoTime() - start) / 1_000_000;
+        var feedAgeSeconds = Duration.between(observedAt, Instant.now()).getSeconds();
         log.info(
                 "{}: imported={} skipped={} missingStations={} durationMs={} feedAgeSeconds={}",
                 LOG_PREFIX,
@@ -144,7 +143,7 @@ public class WeatherImportService {
 
     // region Private helpers
     private String fetchFeed() {
-        byte[] body = weatherRestClient.get().retrieve().body(byte[].class);
+        var body = weatherRestClient.get().retrieve().body(byte[].class);
         if (body == null || body.length == 0) {
             throw new IllegalStateException("Weather feed returned an empty response");
         }

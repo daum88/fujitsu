@@ -13,7 +13,7 @@ public class NumericRangeMatcher implements ConditionMatcher {
 
     @Override
     public boolean matches(ExtraFeeRule rule, DeliveryContext ctx) {
-        BigDecimal value =
+        var value =
                 rule.getConditionType() == ConditionType.TEMPERATURE
                         ? ctx.observation().getAirTemperature()
                         : ctx.observation().getWindSpeed();
@@ -27,7 +27,7 @@ public class NumericRangeMatcher implements ConditionMatcher {
         if (rule.getMinValue() == null) {
             return true;
         }
-        int comparison = value.compareTo(rule.getMinValue());
+        var comparison = value.compareTo(rule.getMinValue());
         return comparison > 0 || (comparison == 0 && Boolean.TRUE.equals(rule.getMinInclusive()));
     }
 
@@ -35,7 +35,7 @@ public class NumericRangeMatcher implements ConditionMatcher {
         if (rule.getMaxValue() == null) {
             return true;
         }
-        int comparison = value.compareTo(rule.getMaxValue());
+        var comparison = value.compareTo(rule.getMaxValue());
         return comparison < 0 || (comparison == 0 && Boolean.TRUE.equals(rule.getMaxInclusive()));
     }
 }

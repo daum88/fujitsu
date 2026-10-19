@@ -10,9 +10,9 @@ INSERT INTO base_fee_rule (city, vehicle_type, fee, valid_from) VALUES
     ('TARTU',   'CAR',     3.50, TIMESTAMP WITH TIME ZONE '2000-01-01 00:00:00+00'),
     ('TARTU',   'SCOOTER', 3.00, TIMESTAMP WITH TIME ZONE '2000-01-01 00:00:00+00'),
     ('TARTU',   'BIKE',    2.50, TIMESTAMP WITH TIME ZONE '2000-01-01 00:00:00+00'),
-    ('PÄRNU',   'CAR',     3.00, TIMESTAMP WITH TIME ZONE '2000-01-01 00:00:00+00'),
-    ('PÄRNU',   'SCOOTER', 2.50, TIMESTAMP WITH TIME ZONE '2000-01-01 00:00:00+00'),
-    ('PÄRNU',   'BIKE',    2.00, TIMESTAMP WITH TIME ZONE '2000-01-01 00:00:00+00');
+    ('PARNU',   'CAR',     3.00, TIMESTAMP WITH TIME ZONE '2000-01-01 00:00:00+00'),
+    ('PARNU',   'SCOOTER', 2.50, TIMESTAMP WITH TIME ZONE '2000-01-01 00:00:00+00'),
+    ('PARNU',   'BIKE',    2.00, TIMESTAMP WITH TIME ZONE '2000-01-01 00:00:00+00');
 
 -- ===== Air temperature extra fee (ATEF) — scooter & bike =====
 -- t < -10 -> +1.00

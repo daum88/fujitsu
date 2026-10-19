@@ -36,12 +36,12 @@ public class DemoDataSeeder implements ApplicationRunner {
     private void seedWinter() {
         insert(City.TALLINN.getStationName(), "-5.0", "5.0", "Light snow shower", WINTER);
         insert(City.TARTU.getStationName(), "-12.0", "4.0", "Snow", WINTER);
-        insert(City.PÄRNU.getStationName(), "1.0", "15.0", "Moderate rain", WINTER);
+        insert(City.PARNU.getStationName(), "1.0", "15.0", "Moderate rain", WINTER);
     }
 
     private void seedStorm() {
         insert(City.TALLINN.getStationName(), "20.0", "22.0", "Thunderstorm", STORM);
-        insert(City.PÄRNU.getStationName(), "25.0", "8.0", "Cloudy with clear spells", STORM);
+        insert(City.PARNU.getStationName(), "25.0", "8.0", "Cloudy with clear spells", STORM);
     }
 
     private void insert(

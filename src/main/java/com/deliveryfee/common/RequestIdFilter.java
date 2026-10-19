@@ -29,7 +29,7 @@ public class RequestIdFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String requestId = resolveRequestId(request.getHeader(HEADER));
+        var requestId = resolveRequestId(request.getHeader(HEADER));
         MDC.put(MDC_KEY, requestId);
         request.setAttribute(ATTRIBUTE, requestId);
         response.setHeader(HEADER, requestId);
@@ -48,7 +48,7 @@ public class RequestIdFilter extends OncePerRequestFilter {
         if (header == null || header.isBlank()) {
             return UUID.randomUUID().toString();
         }
-        String sanitized = header.replaceAll("[^A-Za-z0-9._-]", "");
+        var sanitized = header.replaceAll("[^A-Za-z0-9._-]", "");
         if (sanitized.isBlank()) {
             return UUID.randomUUID().toString();
         }

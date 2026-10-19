@@ -2,7 +2,6 @@ package com.deliveryfee.weather;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -24,13 +23,13 @@ public class WeatherImportHealthIndicator implements HealthIndicator {
 
     @Override
     public Health health() {
-        Instant now = Instant.now();
-        Optional<Instant> lastSuccess = importStatus.lastSuccessAt();
-        boolean fresh =
+        var now = Instant.now();
+        var lastSuccess = importStatus.lastSuccessAt();
+        var fresh =
                 lastSuccess.isPresent()
                         && lastSuccess.get().isAfter(now.minus(STALENESS_THRESHOLD));
 
-        Health.Builder builder = fresh ? Health.up() : Health.down();
+        var builder = fresh ? Health.up() : Health.down();
         if (!fresh) {
             builder.withDetail("reason", "no recent successful weather import");
         }

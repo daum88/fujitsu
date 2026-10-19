@@ -12,8 +12,7 @@ public class PhenomenonMatcher implements ConditionMatcher {
 
     @Override
     public boolean matches(ExtraFeeRule rule, DeliveryContext ctx) {
-        PhenomenonCategory category =
-                PhenomenonCategory.classify(ctx.observation().getPhenomenon());
+        var category = PhenomenonCategory.classify(ctx.observation().getPhenomenon());
         return category != null && category == rule.getPhenomenonCategory();
     }
 }

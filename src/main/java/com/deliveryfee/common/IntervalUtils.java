@@ -24,8 +24,8 @@ public final class IntervalUtils {
     public static boolean overlaps(Instant fromA, Instant toA, Instant fromB, Instant toB) {
         Objects.requireNonNull(fromA, "fromA must not be null");
         Objects.requireNonNull(fromB, "fromB must not be null");
-        Instant endA = toA == null ? Instant.MAX : toA;
-        Instant endB = toB == null ? Instant.MAX : toB;
+        var endA = toA == null ? Instant.MAX : toA;
+        var endB = toB == null ? Instant.MAX : toB;
         return fromA.isBefore(endB) && fromB.isBefore(endA);
     }
 }

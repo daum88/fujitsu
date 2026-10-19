@@ -31,7 +31,7 @@ public class HttpClients {
      */
     @Bean
     public RestClient weatherRestClient(AppProperties properties) {
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        var requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(properties.weatherImport().connectTimeout());
         requestFactory.setReadTimeout(properties.weatherImport().readTimeout());
         return RestClient.builder()
@@ -62,15 +62,15 @@ public class HttpClients {
      */
     @Bean
     public XmlMapper hardenedXmlMapper() {
-        XMLInputFactory inputFactory = XMLInputFactory.newFactory();
+        var inputFactory = XMLInputFactory.newFactory();
         inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
 
-        XmlFactory xmlFactory = XmlFactory.builder().xmlInputFactory(inputFactory).build();
-        XmlMapper mapper = new XmlMapper(xmlFactory);
+        var xmlFactory = XmlFactory.builder().xmlInputFactory(inputFactory).build();
+        var mapper = new XmlMapper(xmlFactory);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        SimpleModule module = new SimpleModule();
+        var module = new SimpleModule();
         module.addDeserializer(String.class, new BlankToNullStringDeserializer());
         mapper.registerModule(module);
         return mapper;

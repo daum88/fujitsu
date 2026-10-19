@@ -17,7 +17,7 @@ public class ImportStatus {
 
     /** Records a successful import run. */
     public synchronized void recordSuccess() {
-        Instant now = Instant.now();
+        var now = Instant.now();
         this.lastSuccessAt = now;
         this.lastAttemptAt = now;
         this.lastError = null;

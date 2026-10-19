@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public enum City {
     TALLINN("Tallinn-Harku"),
     TARTU("Tartu-Tõravere"),
-    PÄRNU("Pärnu");
+    PARNU("Pärnu");
 
     private final String stationName;
 

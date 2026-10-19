@@ -40,7 +40,7 @@ public class FeeRuleService {
     @Transactional
     public BaseFeeRuleResponse createBaseFee(BaseFeeRuleRequest request) {
         ensureNoBaseFeeOverlap(request, null);
-        BaseFeeRule rule =
+        var rule =
                 new BaseFeeRule(
                         request.city(),
                         request.vehicleType(),
@@ -53,7 +53,7 @@ public class FeeRuleService {
     /** Updates a base fee rule after verifying there is no overlapping active window. */
     @Transactional
     public BaseFeeRuleResponse updateBaseFee(Long id, BaseFeeRuleRequest request) {
-        BaseFeeRule existing =
+        var existing =
                 baseFeeRuleRepository
                         .findById(id)
                         .orElseThrow(() -> new NotFoundException("Base fee rule", id));
@@ -69,7 +69,7 @@ public class FeeRuleService {
     /** Deletes a base fee rule; historical calculations stay reproducible via validity windows. */
     @Transactional
     public void deleteBaseFee(Long id) {
-        BaseFeeRule existing =
+        var existing =
                 baseFeeRuleRepository
                         .findById(id)
                         .orElseThrow(() -> new NotFoundException("Base fee rule", id));
@@ -96,7 +96,7 @@ public class FeeRuleService {
     /** Updates an extra fee rule after verifying there is no conflicting overlapping rule. */
     @Transactional
     public ExtraFeeRuleResponse updateExtraFee(Long id, ExtraFeeRuleRequest request) {
-        ExtraFeeRule existing =
+        var existing =
                 extraFeeRuleRepository
                         .findById(id)
                         .orElseThrow(() -> new NotFoundException("Extra fee rule", id));
@@ -110,7 +110,7 @@ public class FeeRuleService {
      */
     @Transactional
     public void deleteExtraFee(Long id) {
-        ExtraFeeRule existing =
+        var existing =
                 extraFeeRuleRepository
                         .findById(id)
                         .orElseThrow(() -> new NotFoundException("Extra fee rule", id));
@@ -121,7 +121,7 @@ public class FeeRuleService {
 
     // region Private helpers
     private void ensureNoBaseFeeOverlap(BaseFeeRuleRequest request, Long excludeId) {
-        boolean overlaps =
+        var overlaps =
                 baseFeeRuleRepository
                         .findAllByCityAndVehicleType(request.city(), request.vehicleType())
                         .stream()
@@ -143,8 +143,8 @@ public class FeeRuleService {
     }
 
     private void ensureNoExtraFeeOverlap(ExtraFeeRuleRequest request, Long excludeId) {
-        ExtraFeeRule candidate = toEntity(request);
-        boolean overlaps =
+        var candidate = toEntity(request);
+        var overlaps =
                 extraFeeRuleRepository
                         .findAllByConditionTypeAndVehicleType(
                                 request.conditionType(), request.vehicleType())

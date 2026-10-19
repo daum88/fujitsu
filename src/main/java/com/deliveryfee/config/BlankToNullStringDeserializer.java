@@ -19,7 +19,7 @@ public class BlankToNullStringDeserializer extends StdDeserializer<String> {
     @Override
     public String deserialize(JsonParser parser, DeserializationContext context)
             throws IOException {
-        String value = parser.getValueAsString();
+        var value = parser.getValueAsString();
         if (value == null || value.isBlank()) {
             return null;
         }

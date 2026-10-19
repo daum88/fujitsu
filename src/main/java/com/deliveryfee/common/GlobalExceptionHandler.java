@@ -1,6 +1,5 @@
 package com.deliveryfee.common;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
 import org.slf4j.Logger;
@@ -33,7 +32,7 @@ public class GlobalExceptionHandler {
     // region Public API
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        List<String> errors =
+        var errors =
                 ex.getBindingResult().getFieldErrors().stream()
                         .map(GlobalExceptionHandler::formatFieldError)
                         .toList();
@@ -42,14 +41,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ProblemDetail handleHandlerMethodValidation(HandlerMethodValidationException ex) {
-        List<String> errors =
+        var errors =
                 ex.getAllErrors().stream().map(MessageSourceResolvable::getDefaultMessage).toList();
         return problem(HttpStatus.BAD_REQUEST, "Validation failed", errors);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ProblemDetail handleConstraintViolation(ConstraintViolationException ex) {
-        List<String> errors =
+        var errors =
                 ex.getConstraintViolations().stream()
                         .map(v -> v.getPropertyPath() + ": " + v.getMessage())
                         .toList();
@@ -111,8 +110,8 @@ public class GlobalExceptionHandler {
 
     // region Private helpers
     private static ProblemDetail problem(HttpStatus status, String detail, List<String> errors) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
-        String requestId = currentRequestId();
+        var problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
+        var requestId = currentRequestId();
         if (requestId != null) {
             problemDetail.setProperty("requestId", requestId);
         }
@@ -135,12 +134,11 @@ public class GlobalExceptionHandler {
     }
 
     private static String requestDescription() {
-        ServletRequestAttributes attributes =
-                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        var attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
             return null;
         }
-        HttpServletRequest request = attributes.getRequest();
+        var request = attributes.getRequest();
         return request.getMethod() + " " + request.getRequestURI();
     }
 
